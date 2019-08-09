@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CamUsb</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="appbar_scrolling_view_behavior"/>
+</resources>
