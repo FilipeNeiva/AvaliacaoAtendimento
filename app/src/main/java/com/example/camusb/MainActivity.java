@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
             Bitmap imageRotate = Bitmap.createBitmap(myBitmap, 0, 0,myBitmap.getWidth(),myBitmap.getHeight(), matrix, true);
 
             image.setImageBitmap(imageRotate);
+
+            assert path != null;
+            File file = new File(path);
+            boolean deletar = file.delete();
+
         }
     }
 }

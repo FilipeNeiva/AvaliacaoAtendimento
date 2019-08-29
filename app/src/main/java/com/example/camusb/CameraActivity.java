@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
 import android.view.Surface;
@@ -27,7 +28,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.camusb.model.Foto;
+import com.example.camusb.network.services.APIService;
+
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -36,6 +51,7 @@ public class CameraActivity extends AppCompatActivity {
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
     TextureView textureView;
     Bitmap image;
+    APIService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +59,8 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         textureView = findViewById(R.id.view_finder);
+
+        apiService = new APIService("");
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
@@ -90,7 +108,26 @@ public class CameraActivity extends AppCompatActivity {
                     public void onImageSaved(@NonNull File file) {
                         image = BitmapFactory.decodeFile(file.getPath());
 
+                        String nomeArquivo = (new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSZ").format(Calendar.getInstance().getTime())) + ".png";
+
+                        RequestBody arquivo = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+                        MultipartBody.Part foto =  MultipartBody.Part.createFormData("arquivo", nomeArquivo, arquivo);
+
                         // TODO: Enviar a foto pro pc
+                        Call<Foto> fotoCall = apiService.getFotoEndPoint().postFoto(foto);
+
+                        fotoCall.enqueue(new Callback<Foto>() {
+                            @Override
+                            public void onResponse(Call<Foto> call, Response<Foto> response) {
+                                Log.i("RESPONSE", response.message());
+                            }
+
+                            @Override
+                            public void onFailure(Call<Foto> call, Throwable t) {
+                                Log.e("degub", t.getMessage());
+                            }
+                        });
 
                         startActivity(new Intent(getApplicationContext(), MainActivity.class).putExtra("path", file.getPath()));
                         finish();
