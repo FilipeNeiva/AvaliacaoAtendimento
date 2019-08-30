@@ -110,12 +110,12 @@ public class CameraActivity extends AppCompatActivity {
 
                         String nomeArquivo = (new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSZ").format(Calendar.getInstance().getTime())) + ".png";
 
-                        RequestBody arquivo = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                        RequestBody arquivo = RequestBody.create(MediaType.parse("image/*"), file);
 
                         MultipartBody.Part foto =  MultipartBody.Part.createFormData("arquivo", nomeArquivo, arquivo);
 
                         // TODO: Enviar a foto pro pc
-                        Call<Foto> fotoCall = apiService.getFotoEndPoint().postFoto(foto);
+                        Call<Foto> fotoCall = apiService.getFotoEndPoint().postFoto(null, foto);
 
                         fotoCall.enqueue(new Callback<Foto>() {
                             @Override
@@ -145,8 +145,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
 
-        //bind to lifecycle:
-        CameraX.bindToLifecycle((LifecycleOwner)this, preview, imgCap);
+        CameraX.bindToLifecycle(this, preview, imgCap);
     }
 
     private void updateTransform(){

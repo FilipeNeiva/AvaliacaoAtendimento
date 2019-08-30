@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             assert path != null;
             File file = new File(path);
             boolean deletar = file.delete();
+            intent.putExtra("path", (Bundle) null);
 
         }
     }

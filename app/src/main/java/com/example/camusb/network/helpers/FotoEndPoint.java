@@ -3,6 +3,7 @@ package com.example.camusb.network.helpers;
 import com.example.camusb.model.Foto;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -16,5 +17,5 @@ public interface FotoEndPoint {
 
     @Multipart
     @POST("gabarito/")
-    Call<Foto> postFoto(@Part MultipartBody.Part imagem);
+    Call<Foto> postFoto(@Part("id") Long id, @Part MultipartBody.Part imagem);
 }
